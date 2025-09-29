@@ -17,23 +17,15 @@ posts_per_day = st.number_input("Posts per day:", min_value=1, max_value=10, val
 # ---- Function to generate content dynamically ----
 def generate_content(topic):
     try:
-        prompt = f"""
-        You are a social media content planner AI.
-        Generate one content idea for the topic "{topic}".
-        Include:
-        - Content type (e.g. Reel, Carousel, Tweet, Blog)
-        - Hook/Caption
-        - Engagement prompt
-        """
-
-        # Call Hugging Face Inference
-        response = client.text_generation(
-            model="meta-llama/Llama-2-13b-chat-hf",  # change if needed
-            prompt=prompt,
-            max_new_tokens=150,
-            temperature=0.7
+        response = client.chat_completion(
+            model="meta-llama/Llama-2-13b-chat-hf",  # ✅ conversational model
+            messages=[
+                {"role": "system", "content": "You are a social media content planner AI."},
+                {"role": "user", "content": f"Generate one content idea for {topic} with a content type, hook/caption, and engagement prompt."}
+            ],
+            max_tokens=120,
         )
-        return response.strip()
+        return response["choices"][0]["message"]["content"].strip()
     except Exception as e:
         return f"⚠️ Error: {e}"
 
