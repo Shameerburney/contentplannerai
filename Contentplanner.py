@@ -4,7 +4,7 @@ from io import BytesIO
 from huggingface_hub import InferenceClient
 
 # ---- Load API key from Streamlit Secrets ----
-client = InferenceClient(api_key=st.secrets["HF_API_KEY"])
+client = InferenceClient(token=st.secrets["HF_API_KEY"])
 
 st.title("🧠 Universal Content Planner Generator (Hugging Face)")
 st.markdown("Generate a 5-day content plan with 2 posts per day for any topic you want!")
@@ -17,15 +17,23 @@ posts_per_day = st.number_input("Posts per day:", min_value=1, max_value=10, val
 # ---- Function to generate content dynamically ----
 def generate_content(topic):
     try:
-        response = client.chat.completions.create(
-            model="meta-llama/Llama-2-13b-chat-hf",   # 👈 Change model if needed
-            messages=[
-                {"role": "system", "content": "You are a social media content planner AI."},
-                {"role": "user", "content": f"Generate one content idea for {topic} with a content type, hook/caption, and engagement prompt."}
-            ],
-            max_tokens=120
+        prompt = f"""
+        You are a social media content planner AI.
+        Generate one content idea for the topic "{topic}".
+        Include:
+        - Content type (e.g. Reel, Carousel, Tweet, Blog)
+        - Hook/Caption
+        - Engagement prompt
+        """
+
+        # Call Hugging Face Inference
+        response = client.text_generation(
+            model="meta-llama/Llama-2-13b-chat-hf",  # change if needed
+            prompt=prompt,
+            max_new_tokens=150,
+            temperature=0.7
         )
-        return response.choices[0].message["content"].strip()
+        return response.strip()
     except Exception as e:
         return f"⚠️ Error: {e}"
 
