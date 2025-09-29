@@ -4,8 +4,7 @@ from io import BytesIO
 from openai import OpenAI
 
 # ---- Load API key from Streamlit Secrets ----
-api_key = st.secrets["OPENAI_API_KEY"]
-client = OpenAI(api_key=api_key)
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 st.title("🧠 Universal Content Planner Generator")
 st.markdown("Generate a 5-day content plan with 2 posts per day for any topic you want!")
