@@ -1,1 +1,13 @@
+# Ignore secret configuration
+secrets.toml
 
+# Python cache files
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# System files
+.DS_Store
+Thumbs.db
