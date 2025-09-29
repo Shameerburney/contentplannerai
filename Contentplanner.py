@@ -16,25 +16,27 @@ posts_per_day = st.number_input("Posts per day:", min_value=1, max_value=10, val
 
 # ---- Function to generate content dynamically ----
 def generate_content(topic):
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a social media content planner AI."},
-            {"role": "user", "content": f"Generate one content idea for {topic} with a content type, hook/caption, and engagement prompt."}
-        ],
-        max_tokens=120
-    )
-    return response.choices[0].message.content
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a social media content planner AI."},
+                {"role": "user", "content": f"Generate one content idea for {topic} with a content type, hook/caption, and engagement prompt."}
+            ],
+            max_tokens=120
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        return f"⚠️ Error: {e}"
 
 # ---- Generate Planner ----
 if st.button("Generate Content Planner"):
     planner = []
-    days_list = [f"Day {i+1}" for i in range(num_days)]
-    for day in days_list:
-        for post_num in range(1, posts_per_day+1):
+    for day in range(1, num_days + 1):
+        for post_num in range(1, posts_per_day + 1):
             idea = generate_content(topic)
             planner.append({
-                "Day": day,
+                "Day": f"Day {day}",
                 "Post #": post_num,
                 "Generated Idea": idea
             })
@@ -42,7 +44,7 @@ if st.button("Generate Content Planner"):
     df = pd.DataFrame(planner)
     st.dataframe(df)
 
-    # CSV Download
+    # ---- CSV Download ----
     st.download_button(
         label="📥 Download CSV",
         data=df.to_csv(index=False),
@@ -50,14 +52,13 @@ if st.button("Generate Content Planner"):
         mime="text/csv"
     )
 
-    # Excel Download
+    # ---- Excel Download ----
     output = BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name="Planner")
-    data = output.getvalue()
     st.download_button(
         label="📥 Download Excel",
-        data=data,
+        data=output.getvalue(),
         file_name=f"{topic}_Content_Planner.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
