@@ -4,7 +4,7 @@ import pandas as pd
 from io import BytesIO
 
 st.title("🧠 Universal Content Planner Generator")
-st.markdown("Generate a 5-day content plan with 2 posts per day for any topic you want!")
+st.markdown("Generate a 5-day or more content plan with 2 posts per day for any topic you want!")
 
 # ---- User Input ----
 topic = st.text_input("Enter the topic/category you want content for:", "AI")
@@ -80,3 +80,4 @@ if st.button("Generate Content Planner"):
         file_name=f"{topic}_Content_Planner.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
