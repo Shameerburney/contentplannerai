@@ -2,6 +2,12 @@ import streamlit as st
 import random
 import pandas as pd
 from io import BytesIO
+from dotenv import load_dotenv
+import os
+
+# ---- Load environment variables ----
+load_dotenv()
+api_key = os.getenv("OPENAI_API_KEY")  # you can use this later for AI features
 
 st.title("🧠 Universal Content Planner Generator")
 st.markdown("Generate a 5-day content plan with 2 posts per day for any topic you want!")
@@ -41,7 +47,6 @@ def generate_content(topic):
         "Hook / Caption": random.choice(hooks),
         "Engagement Prompt": random.choice(engagement_prompts)
     }
-
 
 # ---- Generate Planner ----
 if st.button("Generate Content Planner"):
