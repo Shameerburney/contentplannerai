@@ -1,13 +1,10 @@
 import streamlit as st
 import pandas as pd
 from io import BytesIO
-from dotenv import load_dotenv
-import os
 from openai import OpenAI
 
-# ---- Load environment variables ----
-load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
+# ---- Load API key from Streamlit Secrets ----
+api_key = st.secrets["OPENAI_API_KEY"]
 client = OpenAI(api_key=api_key)
 
 st.title("🧠 Universal Content Planner Generator")
@@ -18,10 +15,10 @@ topic = st.text_input("Enter the topic/category you want content for:", "AI")
 num_days = st.number_input("Number of days:", min_value=1, max_value=100, value=5)
 posts_per_day = st.number_input("Posts per day:", min_value=1, max_value=10, value=2)
 
-# ---- Function to generate content dynamically (using OpenAI) ----
+# ---- Function to generate content dynamically ----
 def generate_content(topic):
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",   # or gpt-4 if you have access
+        model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a social media content planner AI."},
             {"role": "user", "content": f"Generate one content idea for {topic} with a content type, hook/caption, and engagement prompt."}
