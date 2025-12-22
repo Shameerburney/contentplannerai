@@ -4,7 +4,7 @@ from io import BytesIO
 from groq import Groq
 import streamlit as st
 
-st.write(st.secrets["GROQ_API_KEY"])
+client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
 st.title("🧠 Universal Content Planner Generator")
 st.markdown("Generate a 5-day content plan with 2 posts per day for any topic you want!")
@@ -62,5 +62,6 @@ if st.button("Generate Content Planner"):
         file_name=f"{topic}_Content_Planner.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
 
 
