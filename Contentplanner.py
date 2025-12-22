@@ -3,10 +3,10 @@ import pandas as pd
 from io import BytesIO
 from groq import Groq
 
-client = Groq(
-    api_key=st.secrets["GROQ_API_KEY"]
-)
-st.title("🧠 Universal Content Planner Generator (Hugging Face)")
+# ---- Groq Client ----
+client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+
+st.title("🧠 Universal Content Planner Generator")
 st.markdown("Generate a 5-day content plan with 2 posts per day for any topic you want!")
 
 # ---- User Input ----
@@ -17,15 +17,15 @@ posts_per_day = st.number_input("Posts per day:", min_value=1, max_value=10, val
 # ---- Function to generate content dynamically ----
 def generate_content(topic):
     try:
-        response = client.chat_completion(
-            model="meta-llama/Llama-2-13b-chat-hf",  # ✅ conversational model
+        response = client.chat.completions.create(
+            model="meta-llama/Llama-2-13b-chat-hf",
             messages=[
                 {"role": "system", "content": "You are a social media content planner AI."},
                 {"role": "user", "content": f"Generate one content idea for {topic} with a content type, hook/caption, and engagement prompt."}
             ],
             max_tokens=120,
         )
-        return response["choices"][0]["message"]["content"].strip()
+        return response.choices[0].message.content.strip()
     except Exception as e:
         return f"⚠️ Error: {e}"
 
@@ -62,4 +62,3 @@ if st.button("Generate Content Planner"):
         file_name=f"{topic}_Content_Planner.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
-
