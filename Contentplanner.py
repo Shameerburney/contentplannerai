@@ -1,10 +1,11 @@
 import streamlit as st
 import pandas as pd
 from io import BytesIO
-from groq import Groq
-import streamlit as st
+import google.generativeai as genai
 
-client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 st.title("🧠 Universal Content Planner Generator")
 st.markdown("Generate a 5-day content plan with 2 posts per day for any topic you want!")
