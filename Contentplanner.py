@@ -3,9 +3,11 @@ import pandas as pd
 from io import BytesIO
 import google.generativeai as genai
 
+# ---- API KEY ----
 genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
-model = genai.GenerativeModel("gemini-pro")
+# ---- MODEL (stable version) ----
+model = genai.GenerativeModel("models/gemini-1.5-flash")
 
 st.title("🧠 Universal Content Planner Generator")
 st.markdown("Generate a content plan with multiple posts per day for any topic.")
@@ -15,7 +17,7 @@ topic = st.text_input("Enter the topic/category:", "AI")
 num_days = st.number_input("Number of days:", min_value=1, max_value=100, value=5)
 posts_per_day = st.number_input("Posts per day:", min_value=1, max_value=10, value=2)
 
-# ---- Gemini Function ----
+# ---- FIXED Gemini function ----
 def generate_content(topic):
     try:
         prompt = f"""
@@ -30,6 +32,7 @@ Include:
 
 Keep it short and practical.
 """
+
         response = model.generate_content(prompt)
         return response.text.strip()
 
